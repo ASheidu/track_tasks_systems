@@ -1,0 +1,129 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Track Task</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">
+        Skip to main content
+    </a>
+
+    <header>
+        <div class="header-container">
+            <a href="login.html" class="logo">Track Task</a>
+
+            <nav aria-label="Main navigation">
+                <a href="login.html">Login</a>
+                <a href="register.html" aria-current="page">Sign Up</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="form-box" aria-labelledby="register-title">
+
+            <h1 id="register-title">Create Account</h1>
+            <p class="subtitle">
+                Create your account to start managing tasks
+            </p>
+
+            <form id="registerForm" novalidate>
+
+                <div class="input-group">
+                    <label for="fullName">Full Name</label>
+                    <input
+                        type="text"
+                        id="fullName"
+                        name="fullName"
+                        placeholder="Enter your full name"
+                        autocomplete="name"
+                        maxlength="60"
+                        required
+                        aria-describedby="fullNameError"
+                    >
+                    <small id="fullNameError"
+                           class="error"
+                           aria-live="polite"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="registerEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="registerEmail"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        maxlength="254"
+                        required
+                        aria-describedby="registerEmailError"
+                    >
+                    <small id="registerEmailError"
+                           class="error"
+                           aria-live="polite"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="registerPassword">Password</label>
+                    <input
+                        type="password"
+                        id="registerPassword"
+                        name="password"
+                        placeholder="Create a password"
+                        autocomplete="new-password"
+                        minlength="8"
+                        required
+                        aria-describedby="passwordHint registerPasswordError"
+                    >
+                    <p id="passwordHint" class="hint">
+                        At least 8 characters, including uppercase,
+                        lowercase, and a number.
+                    </p>
+                    <small id="registerPasswordError"
+                           class="error"
+                           aria-live="polite"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input
+                        type="password"
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        placeholder="Confirm your password"
+                        autocomplete="new-password"
+                        required
+                        aria-describedby="confirmPasswordError"
+                    >
+                    <small id="confirmPasswordError"
+                           class="error"
+                           aria-live="polite"></small>
+                </div>
+
+                <button type="submit" class="btn">Register</button>
+
+                <p id="registerMessage" class="message"
+                   role="status" aria-live="polite"></p>
+
+            </form>
+
+            <p class="bottom-text">
+                Already have an account?
+                <a href="login.html">Login</a>
+            </p>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>Track Task | CSCI 426 Milestone 2</p>
+    </footer>
+
+</body>
+</html>

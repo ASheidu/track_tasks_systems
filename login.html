@@ -1,0 +1,96 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Track Task</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="script.js" defer></script>
+</head>
+<body>
+
+    <a href="#main-content" class="skip-link">
+        Skip to main content
+    </a>
+
+    <header>
+        <div class="header-container">
+            <a href="login.html" class="logo">Track Task</a>
+
+            <nav aria-label="Main navigation">
+                <a href="login.html" aria-current="page">Login</a>
+                <a href="register.html">Sign Up</a>
+            </nav>
+        </div>
+    </header>
+
+    <main id="main-content">
+        <section class="form-box" aria-labelledby="login-title">
+
+            <h1 id="login-title">Welcome Back</h1>
+            <p class="subtitle">Sign in to manage your tasks</p>
+
+            <form id="loginForm" novalidate>
+
+                <div class="input-group">
+                    <label for="loginEmail">Email Address</label>
+                    <input
+                        type="email"
+                        id="loginEmail"
+                        name="email"
+                        placeholder="Enter your email"
+                        autocomplete="email"
+                        maxlength="254"
+                        required
+                        aria-describedby="loginEmailError"
+                    >
+                    <small id="loginEmailError"
+                           class="error"
+                           aria-live="polite"></small>
+                </div>
+
+                <div class="input-group">
+                    <label for="loginPassword">Password</label>
+                    <input
+                        type="password"
+                        id="loginPassword"
+                        name="password"
+                        placeholder="Enter your password"
+                        autocomplete="current-password"
+                        required
+                        aria-describedby="loginPasswordError"
+                    >
+                    <small id="loginPasswordError"
+                           class="error"
+                           aria-live="polite"></small>
+                </div>
+
+                <div class="forgot-link">
+                    <button type="button" id="forgotPassword"
+                            class="text-button">
+                        Forgot Password?
+                    </button>
+                </div>
+
+                <button type="submit" class="btn">Login</button>
+
+                <p id="loginMessage" class="message"
+                   role="status" aria-live="polite"></p>
+
+            </form>
+
+            <p class="bottom-text">
+                Don't have an account?
+                <a href="register.html">Sign Up</a>
+            </p>
+
+        </section>
+    </main>
+
+    <footer>
+        <p>Track Task | CSCI 426 Milestone 2</p>
+    </footer>
+
+</body>
+</html>

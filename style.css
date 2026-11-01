@@ -1,0 +1,278 @@
+
+/* Track Task - Milestone 2 */
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    font-family: Arial, sans-serif;
+    background-color: #f3f6fb;
+    color: #253247;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Header */
+
+header {
+    background-color: #1e293b;
+    padding: 22px 30px;
+}
+
+.header-container {
+    max-width: 1100px;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.logo {
+    color: white;
+    font-size: 26px;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+nav {
+    display: flex;
+    gap: 25px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    font-size: 15px;
+}
+
+nav a:hover,
+nav a[aria-current="page"] {
+    text-decoration: underline;
+}
+
+/* Main Section */
+
+main {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 50px 20px;
+}
+
+/* Form Card */
+
+.form-box {
+    background-color: white;
+    width: 100%;
+    max-width: 460px;
+    padding: 35px;
+    border-radius: 12px;
+    border: 1px solid #dbe3ef;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.07);
+}
+
+h1 {
+    text-align: center;
+    margin: 0 0 10px;
+    font-size: 28px;
+}
+
+.subtitle {
+    text-align: center;
+    color: #65748b;
+    font-size: 14px;
+    margin-bottom: 30px;
+}
+
+/* Input Fields */
+
+.input-group {
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    border: 1px solid #bac8da;
+    border-radius: 6px;
+    font-size: 14px;
+    font-family: inherit;
+}
+
+input:focus {
+    border-color: #315be8;
+}
+
+input[aria-invalid="true"] {
+    border-color: #b42335;
+}
+
+/* Accessibility */
+
+:focus-visible {
+    outline: 3px solid #f4b942;
+    outline-offset: 3px;
+}
+
+.skip-link {
+    position: absolute;
+    top: -60px;
+    left: 10px;
+    padding: 10px;
+    background: white;
+    color: #17243a;
+    z-index: 10;
+}
+
+.skip-link:focus {
+    top: 10px;
+}
+
+/* Validation Messages */
+
+.error {
+    display: block;
+    color: #b42335;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.error:empty {
+    display: none;
+}
+
+.hint {
+    color: #65748b;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.message {
+    text-align: center;
+    font-size: 13px;
+    line-height: 1.5;
+    margin-top: 15px;
+}
+
+.message:empty {
+    display: none;
+}
+
+.message.success {
+    color: #17613c;
+}
+
+.message.error-message {
+    color: #b42335;
+}
+
+.message.info {
+    color: #2454a5;
+}
+
+/* Buttons */
+
+.btn {
+    width: 100%;
+    background-color: #315be8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn:hover {
+    background-color: #2346bf;
+}
+
+.forgot-link {
+    text-align: right;
+    margin-bottom: 20px;
+}
+
+.text-button {
+    background: none;
+    border: none;
+    padding: 5px 0;
+    color: #2454d8;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+.text-button:hover {
+    text-decoration: underline;
+}
+
+.bottom-text {
+    text-align: center;
+    margin-top: 22px;
+    font-size: 14px;
+}
+
+.bottom-text a {
+    color: #2454d8;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.bottom-text a:hover {
+    text-decoration: underline;
+}
+
+/* Footer */
+
+footer {
+    text-align: center;
+    padding: 15px;
+    color: #65748b;
+    font-size: 12px;
+}
+
+/* Responsive Design */
+
+@media (max-width: 600px) {
+
+    header {
+        padding: 18px;
+    }
+
+    .logo {
+        font-size: 21px;
+    }
+
+    nav {
+        gap: 12px;
+    }
+
+    nav a {
+        font-size: 13px;
+    }
+
+    main {
+        padding: 25px 12px;
+        align-items: flex-start;
+    }
+
+    .form-box {
+        padding: 25px 20px;
+    }
+
+    h1 {
+        font-size: 24px;
+    }
+}
