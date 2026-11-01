@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Task Manager dashboard">
+
+  <title>Dashboard | Task Manager</title>
+
+  <link rel="stylesheet" href="dashboard.css">
+  <script src="dashboard.js" defer></script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main-content">
+    Skip to main content
+  </a>
+
+  <div class="app">
+    <aside class="sidebar">
+      <p class="brand">Track Tasks</p>
+
+      <nav aria-label="Main navigation">
+        <a href="dashboard.html" aria-current="page">Dashboard</a>
+        <a href="tasks.html">My Tasks</a>
+        <a href="calendar.html">Calendar</a>
+        <a href="#reminders">Notifications</a>
+        <a href="#progress">Progress Reports</a>
+      </nav>
+    </aside>
+
+    <div class="workspace">
+      <header class="topbar">
+        <span>Track Tasks</span>
+
+        <span class="user">
+          <span class="avatar" aria-hidden="true">SA</span>
+          Sheidu Al-Ameen
+        </span>
+      </header>
+
+      <main id="main-content" tabindex="-1">
+        <div class="page-heading">
+          <div>
+            <h1>Dashboard</h1>
+            <p>Welcome back, Al-Ameen.</p>
+          </div>
+
+          <button
+            id="show-form"
+            type="button"
+            aria-expanded="false"
+            aria-controls="task-panel"
+          >
+            + Create Task
+          </button>
+        </div>
+
+        <p
+          id="announcement"
+          class="announcement"
+          role="status"
+          aria-live="polite"
+        ></p>
+
+        <section
+          id="task-panel"
+          class="panel"
+          aria-labelledby="form-title"
+          hidden
+        >
+          <h2 id="form-title">Create a task</h2>
+
+          <form id="task-form" novalidate>
+            <p id="form-error" class="error" role="alert"></p>
+
+            <label for="task-title">Task title (required)</label>
+            <input
+              id="task-title"
+              name="title"
+              required
+              minlength="3"
+              maxlength="80"
+              aria-describedby="title-help form-error"
+            >
+            <small id="title-help">Enter 3–80 characters.</small>
+
+            <label for="task-description">Description</label>
+            <textarea
+              id="task-description"
+              name="description"
+              maxlength="300"
+              rows="3"
+              aria-describedby="form-error"
+            ></textarea>
+
+            <div class="form-grid">
+              <div>
+                <label for="task-date">Due date (required)</label>
+                <input
+                  id="task-date"
+                  name="dueDate"
+                  type="date"
+                  required
+                  aria-describedby="form-error"
+                >
+              </div>
+
+              <div>
+                <label for="task-priority">Priority</label>
+                <select
+                  id="task-priority"
+                  name="priority"
+                  aria-describedby="form-error"
+                >
+                  <option value="low">Low</option>
+                  <option value="medium" selected>Medium</option>
+                  <option value="high">High</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button type="submit">Save task</button>
+
+              <button
+                id="cancel-form"
+                class="secondary"
+                type="button"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </section>
+
+        <section class="stats" aria-label="Task summary">
+          <article class="panel">
+            <h2>In Progress</h2>
+            <p id="in-progress-count" class="stat-number">0</p>
+          </article>
+
+          <article class="panel">
+            <h2>Completed</h2>
+            <p id="completed-count" class="stat-number">0</p>
+          </article>
+
+          <article class="panel">
+            <h2>Overdue</h2>
+            <p id="overdue-count" class="stat-number">0</p>
+          </article>
+        </section>
+
+        <section class="panel" aria-labelledby="recent-heading">
+          <h2 id="recent-heading">Recent tasks</h2>
+
+          <div class="filters">
+            <div>
+              <label for="search">Search tasks</label>
+              <input
+                id="search"
+                type="search"
+                maxlength="80"
+                placeholder="Search by title or description"
+              >
+            </div>
+
+            <div>
+              <label for="status-filter">Status</label>
+              <select id="status-filter">
+                <option value="all">All statuses</option>
+                <option value="in-progress">In progress</option>
+                <option value="completed">Completed</option>
+                <option value="overdue">Overdue</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="priority-filter">Priority</label>
+              <select id="priority-filter">
+                <option value="all">All priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+          </div>
+
+          <p id="results-count" class="muted" role="status"></p>
+
+          <ul id="task-list" class="task-list"></ul>
+
+          <p id="empty-message" hidden>
+            No tasks match your search or filters.
+          </p>
+
+          <a href="tasks.html" class="text-link">Open My Tasks</a>
+        </section>
+
+        <section
+          id="progress"
+          class="panel"
+          aria-labelledby="progress-heading"
+        >
+          <div class="progress-heading">
+            <h2 id="progress-heading">Overall Progress</h2>
+            <span id="progress-percent">0%</span>
+          </div>
+
+          <progress
+            id="progress-bar"
+            max="100"
+            value="0"
+            aria-label="Percentage of tasks completed"
+          >
+            0%
+          </progress>
+
+          <p id="progress-description" class="muted">
+            0 of 0 tasks completed
+          </p>
+        </section>
+
+        <section
+          id="reminders"
+          class="panel"
+          aria-labelledby="reminders-heading"
+        >
+          <h2 id="reminders-heading">Deadline reminders</h2>
+          <p id="reminder-text"></p>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
