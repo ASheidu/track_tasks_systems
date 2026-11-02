@@ -1,202 +1,206 @@
 
-"use strict";
-
 // Track Task - Milestone 2
-// Frontend-only form validation
+// Frontend-only prototype
+// No real accounts or passwords are stored.
 
-// Show error under an input field
-function showError(inputId, errorId, message) {
-    const input = document.getElementById(inputId);
-    const error = document.getElementById(errorId);
+// Show / Hide Password
+document.querySelectorAll(".toggle-password").forEach(function (toggle) {
+  toggle.addEventListener("change", function () {
+    const input = document.getElementById(toggle.dataset.target);
+    input.type = toggle.checked ? "text" : "password";
+  });
+});
 
-    error.textContent = message;
-    input.setAttribute("aria-invalid", message ? "true" : "false");
+// Registration Page
+const regForm = document.getElementById("regForm");
+
+if (regForm) {
+  const fullname = document.getElementById("fullname");
+  const email = document.getElementById("email");
+  const username = document.getElementById("username");
+  const pass = document.getElementById("pass");
+  const pass2 = document.getElementById("pass2");
+  const agree = document.getElementById("agree");
+  const notes = document.getElementById("notes");
+
+  const passErr = document.getElementById("passErr");
+  const pass2Err = document.getElementById("pass2Err");
+  const agreeErr = document.getElementById("agreeErr");
+  const notesCount = document.getElementById("notesCount");
+  const successMsg = document.getElementById("successMsg");
+
+  // Validate Full Name
+  function validateName() {
+    if (fullname.value.trim().length < 2) {
+      fullname.setCustomValidity(
+        "Please enter at least 2 characters for your name."
+      );
+    } else {
+      fullname.setCustomValidity("");
+    }
+  }
+
+  // Validate Email
+  function validateEmail() {
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    if (!emailPattern.test(email.value.trim())) {
+      email.setCustomValidity(
+        "Please enter a valid email such as name@example.com."
+      );
+    } else {
+      email.setCustomValidity("");
+    }
+  }
+
+  // Validate Username
+  function validateUsername() {
+    const usernamePattern = /^[A-Za-z0-9_]{4,20}$/;
+
+    if (!usernamePattern.test(username.value)) {
+      username.setCustomValidity(
+        "Use 4-20 letters, numbers, or underscores."
+      );
+    } else {
+      username.setCustomValidity("");
+    }
+  }
+
+  // Validate Password Strength
+  function validatePassword() {
+    const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,64}$/;
+    const valid = passwordPattern.test(pass.value);
+
+    if (!valid) {
+      pass.setCustomValidity(
+        "Use 8-64 characters with a capital letter and a number."
+      );
+
+      passErr.textContent =
+        "Password must include a capital letter and a number.";
+    } else {
+      pass.setCustomValidity("");
+      passErr.textContent = "";
+    }
+
+    validatePasswordMatch();
+  }
+
+  // Confirm Password
+  function validatePasswordMatch() {
+    if (pass2.value === "") {
+      pass2.setCustomValidity("Please confirm your password.");
+      pass2Err.textContent = "";
+    } else if (pass.value !== pass2.value) {
+      pass2.setCustomValidity("Passwords do not match.");
+      pass2Err.textContent = "Passwords do not match.";
+    } else {
+      pass2.setCustomValidity("");
+      pass2Err.textContent = "";
+    }
+  }
+
+  // Live Validation
+  fullname.addEventListener("input", validateName);
+  email.addEventListener("input", validateEmail);
+  username.addEventListener("input", validateUsername);
+  pass.addEventListener("input", validatePassword);
+  pass2.addEventListener("input", validatePasswordMatch);
+
+  // Character Counter
+  notes.addEventListener("input", function () {
+    notesCount.textContent =
+      notes.value.length + " / 150 characters";
+  });
+
+  // Agreement Validation
+  agree.addEventListener("change", function () {
+    agreeErr.textContent = agree.checked
+      ? ""
+      : "Please confirm this is a demo.";
+  });
+
+  // Registration Submission
+  regForm.addEventListener("submit", function (event) {
+    event.preventDefault();
+
+    successMsg.hidden = true;
+
+    validateName();
+    validateEmail();
+    validateUsername();
+    validatePassword();
+    validatePasswordMatch();
+
+    agreeErr.textContent = agree.checked
+      ? ""
+      : "Please confirm this is a demo.";
+
+    if (!regForm.checkValidity()) {
+      regForm.reportValidity();
+
+      const firstInvalid = regForm.querySelector(":invalid");
+
+      if (firstInvalid) {
+        firstInvalid.focus();
+      }
+
+      return;
+    }
+
+    // No information is saved or sent to a server.
+    regForm.reset();
+
+    successMsg.hidden = false;
+    successMsg.focus();
+  });
+
+  // Reset Form
+  regForm.addEventListener("reset", function () {
+    [fullname, email, username, pass, pass2].forEach(function (field) {
+      field.setCustomValidity("");
+    });
+
+    passErr.textContent = "";
+    pass2Err.textContent = "";
+    agreeErr.textContent = "";
+    notesCount.textContent = "0 / 150 characters";
+
+    document.querySelectorAll(".toggle-password").forEach(function (toggle) {
+      toggle.checked = false;
+
+      document.getElementById(toggle.dataset.target).type = "password";
+    });
+  });
 }
 
-// Show form message
-function showMessage(id, message, type) {
-    const element = document.getElementById(id);
-
-    element.textContent = message;
-    element.className = "message " + type;
-}
-
-// Validate email
-function validEmail(email) {
-    const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return pattern.test(email) && email.length <= 254;
-}
-
-// Validate password strength
-function validPassword(password) {
-    return password.length >= 8 &&
-           /[A-Z]/.test(password) &&
-           /[a-z]/.test(password) &&
-           /[0-9]/.test(password);
-}
-
-// LOGIN FORM
-
+// Login Page
 const loginForm = document.getElementById("loginForm");
 
 if (loginForm) {
+  loginForm.addEventListener("submit", function (event) {
+    event.preventDefault();
 
-    loginForm.addEventListener("submit", function(event) {
-        event.preventDefault();
+    const loginEmail = document.getElementById("loginEmail");
+    const loginPassword = document.getElementById("loginPassword");
+    const loginError = document.getElementById("loginError");
 
-        const email = document.getElementById("loginEmail").value.trim();
-        const password = document.getElementById("loginPassword").value;
+    loginError.textContent = "";
 
-        let valid = true;
-        let firstError = null;
+    if (
+      !loginEmail.checkValidity() ||
+      !loginPassword.checkValidity()
+    ) {
+      loginError.textContent =
+        "Enter a valid email and a demo password with at least 8 characters.";
 
-        // Check email
-        if (email === "") {
-            showError("loginEmail", "loginEmailError",
-                      "Email is required.");
-            valid = false;
-            firstError = "loginEmail";
-        } else if (!validEmail(email)) {
-            showError("loginEmail", "loginEmailError",
-                      "Enter a valid email address.");
-            valid = false;
-            firstError = "loginEmail";
-        } else {
-            showError("loginEmail", "loginEmailError", "");
-        }
+      loginForm.reportValidity();
+      return;
+    }
 
-        // Check password
-        if (password === "") {
-            showError("loginPassword", "loginPasswordError",
-                      "Password is required.");
-            valid = false;
-            if (!firstError) firstError = "loginPassword";
-        } else {
-            showError("loginPassword", "loginPasswordError", "");
-        }
-
-        if (valid) {
-            showMessage(
-                "loginMessage",
-                "Validation successful! This is a frontend demo. No login was performed.",
-                "success"
-            );
-        } else {
-            showMessage(
-                "loginMessage",
-                "Please correct the errors above.",
-                "error-message"
-            );
-
-            document.getElementById(firstError).focus();
-        }
-    });
-
-    // Forgot password button
-    document.getElementById("forgotPassword")
-        .addEventListener("click", function() {
-
-            showMessage(
-                "loginMessage",
-                "Password recovery is not available in this frontend prototype.",
-                "info"
-            );
-        });
-}
-
-// REGISTRATION FORM
-
-const registerForm = document.getElementById("registerForm");
-
-if (registerForm) {
-
-    registerForm.addEventListener("submit", function(event) {
-        event.preventDefault();
-
-        const name = document.getElementById("fullName").value.trim();
-        const email = document.getElementById("registerEmail").value.trim();
-        const password = document.getElementById("registerPassword").value;
-        const confirm = document.getElementById("confirmPassword").value;
-
-        let valid = true;
-        let firstError = null;
-
-        // Validate full name
-        if (name.length < 2 || name.length > 60) {
-            showError("fullName", "fullNameError",
-                      "Name must contain 2 to 60 characters.");
-            valid = false;
-            firstError = "fullName";
-        } else if (!/^[\p{L}\p{M} .'-]+$/u.test(name)) {
-            showError("fullName", "fullNameError",
-                      "Name contains invalid characters.");
-            valid = false;
-            firstError = "fullName";
-        } else {
-            showError("fullName", "fullNameError", "");
-        }
-
-        // Validate email
-        if (!validEmail(email)) {
-            showError("registerEmail", "registerEmailError",
-                      "Enter a valid email address.");
-            valid = false;
-            if (!firstError) firstError = "registerEmail";
-        } else {
-            showError("registerEmail", "registerEmailError", "");
-        }
-
-        // Validate password
-        if (!validPassword(password)) {
-            showError(
-                "registerPassword",
-                "registerPasswordError",
-                "Use 8+ characters with uppercase, lowercase, and a number."
-            );
-            valid = false;
-            if (!firstError) firstError = "registerPassword";
-        } else {
-            showError("registerPassword", "registerPasswordError", "");
-        }
-
-        // Confirm passwords match
-        if (confirm === "") {
-            showError("confirmPassword", "confirmPasswordError",
-                      "Please confirm your password.");
-            valid = false;
-            if (!firstError) firstError = "confirmPassword";
-        } else if (password !== confirm) {
-            showError("confirmPassword", "confirmPasswordError",
-                      "Passwords do not match.");
-            valid = false;
-            if (!firstError) firstError = "confirmPassword";
-        } else {
-            showError("confirmPassword", "confirmPasswordError", "");
-        }
-
-        // Final result
-        if (valid) {
-            showMessage(
-                "registerMessage",
-                "Validation successful! This is a frontend demo. No account was created.",
-                "success"
-            );
-
-            registerForm.reset();
-
-            ["fullName", "registerEmail",
-             "registerPassword", "confirmPassword"].forEach(function(id) {
-                document.getElementById(id).removeAttribute("aria-invalid");
-            });
-
-        } else {
-            showMessage(
-                "registerMessage",
-                "Please correct the errors above.",
-                "error-message"
-            );
-
-            document.getElementById(firstError).focus();
-        }
-    });
+    // Demo navigation only.
+    // No authentication or credential storage.
+    // Replace this filename if Sheidu uses a different dashboard filename.
+    window.location.href = "dashboard.html";
+  });
 }
