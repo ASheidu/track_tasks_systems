@@ -1,4 +1,6 @@
 
+"use strict";
+
 // Track Task - Milestone 2
 // Frontend-only prototype
 // No real accounts or passwords are stored.
@@ -7,7 +9,10 @@
 document.querySelectorAll(".toggle-password").forEach(function (toggle) {
   toggle.addEventListener("change", function () {
     const input = document.getElementById(toggle.dataset.target);
-    input.type = toggle.checked ? "text" : "password";
+
+    if (input) {
+      input.type = toggle.checked ? "text" : "password";
+    }
   });
 });
 
@@ -28,6 +33,7 @@ if (regForm) {
   const agreeErr = document.getElementById("agreeErr");
   const notesCount = document.getElementById("notesCount");
   const successMsg = document.getElementById("successMsg");
+  const passwordStrength = document.getElementById("passwordStrength");
 
   // Validate Full Name
   function validateName() {
@@ -66,7 +72,39 @@ if (regForm) {
     }
   }
 
-  // Validate Password Strength
+  // Live Password Strength Indicator
+  function updatePasswordStrength() {
+    if (!passwordStrength) return;
+
+    const password = pass.value;
+
+    if (password.length === 0) {
+      passwordStrength.textContent = "";
+      passwordStrength.style.color = "";
+      return;
+    }
+
+    let score = 0;
+
+    if (password.length >= 8) score++;
+    if (/[A-Z]/.test(password)) score++;
+    if (/[a-z]/.test(password)) score++;
+    if (/[0-9]/.test(password)) score++;
+    if (/[^A-Za-z0-9]/.test(password)) score++;
+
+    if (score <= 2) {
+      passwordStrength.textContent = "Password strength: Weak";
+      passwordStrength.style.color = "#EF4444";
+    } else if (score <= 4) {
+      passwordStrength.textContent = "Password strength: Medium";
+      passwordStrength.style.color = "#F59E0B";
+    } else {
+      passwordStrength.textContent = "Password strength: Strong";
+      passwordStrength.style.color = "#15803D";
+    }
+  }
+
+  // Validate Password
   function validatePassword() {
     const passwordPattern = /^(?=.*[A-Z])(?=.*\d).{8,64}$/;
     const valid = passwordPattern.test(pass.value);
@@ -105,6 +143,7 @@ if (regForm) {
   email.addEventListener("input", validateEmail);
   username.addEventListener("input", validateUsername);
   pass.addEventListener("input", validatePassword);
+  pass.addEventListener("input", updatePasswordStrength);
   pass2.addEventListener("input", validatePasswordMatch);
 
   // Character Counter
@@ -166,10 +205,19 @@ if (regForm) {
     agreeErr.textContent = "";
     notesCount.textContent = "0 / 150 characters";
 
+    if (passwordStrength) {
+      passwordStrength.textContent = "";
+      passwordStrength.style.color = "";
+    }
+
     document.querySelectorAll(".toggle-password").forEach(function (toggle) {
       toggle.checked = false;
 
-      document.getElementById(toggle.dataset.target).type = "password";
+      const input = document.getElementById(toggle.dataset.target);
+
+      if (input) {
+        input.type = "password";
+      }
     });
   });
 }
@@ -200,7 +248,6 @@ if (loginForm) {
 
     // Demo navigation only.
     // No authentication or credential storage.
-    // Replace this filename if Sheidu uses a different dashboard filename.
     window.location.href = "dashboard.html";
   });
 }
