@@ -1,167 +1,80 @@
 "use strict";
 
-const STORAGE_KEY = "trackTasks.tasks.v1";
+const STORAGE_KEY = TrackTask.KEY;
 
 const $ = (id) => document.getElementById(id);
 
-const priorities = ["low", "medium", "high"];
-const statuses = ["in-progress", "completed"];
+const priorities = ["Low", "Medium", "High"];
 
 const names = {
-  "in-progress": "In progress",
+  "to-do": "To-Do",
+  "in-progress": "In Progress",
   completed: "Completed",
   overdue: "Overdue"
 };
-
-function localDate(offset = 0) {
-  const date = new Date();
-
-  date.setDate(date.getDate() + offset);
-
-  const pad = (n) => String(n).padStart(2, "0");
-
-  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-}
-
-function validDate(value) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-    return false;
-  }
-
-  const date = new Date(`${value}T12:00:00`);
-  const [year, month, day] = value.split("-").map(Number);
-
-  return (
-    !Number.isNaN(date.getTime()) &&
-    date.getFullYear() === year &&
-    date.getMonth() + 1 === month &&
-    date.getDate() === day
-  );
-}
-
-function demoTasks() {
-  return [
-    {
-      id: "demo-1",
-      title: "Design dashboard",
-      description: "Build the dashboard layout.",
-      dueDate: localDate(1),
-      priority: "high",
-      status: "in-progress"
-    },
-    {
-      id: "demo-2",
-      title: "Update user stories",
-      description: "Review the requirements.",
-      dueDate: localDate(-1),
-      priority: "high",
-      status: "in-progress"
-    },
-    {
-      id: "demo-3",
-      title: "Review team feedback",
-      description: "Discuss page consistency.",
-      dueDate: localDate(2),
-      priority: "medium",
-      status: "in-progress"
-    },
-    {
-      id: "demo-4",
-      title: "Prepare site map",
-      description: "Connect the main pages.",
-      dueDate: localDate(),
-      priority: "low",
-      status: "completed"
-    }
-  ];
-}
-
-function validTask(task) {
-  return (
-    task &&
-    typeof task.id === "string" &&
-    typeof task.title === "string" &&
-    task.title.trim().length >= 3 &&
-    task.title.length <= 80 &&
-    typeof task.description === "string" &&
-    task.description.length <= 300 &&
-    typeof task.dueDate === "string" &&
-    validDate(task.dueDate) &&
-    priorities.includes(task.priority) &&
-    statuses.includes(task.status)
-  );
-}
 
 function announce(message) {
   $("announcement").textContent = message;
 }
 
+let storageReady = true;
+
 function loadTasks() {
   try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-
-    if (saved === null) {
-      return demoTasks();
-    }
-
-    const data = JSON.parse(saved);
-
-    if (
-      !Array.isArray(data) ||
-      !data.every(validTask) ||
-      new Set(data.map((task) => task.id)).size !== data.length
-    ) {
-      throw new Error("Invalid task data");
-    }
-
-    return data;
-  } catch {
-    announce("Saved tasks could not be loaded. Showing sample tasks.");
-    return demoTasks();
+    const savedTasks = TrackTask.getTasks();
+    storageReady = true;
+    return savedTasks;
+  } catch (error) {
+    storageReady = false;
+    announce(error.message);
+    return [];
   }
 }
 
 let tasks = loadTasks();
 
 function saveTasks() {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
-    return true;
-  } catch {
-    announce(
-      "Changes work on this page, but browser storage is unavailable."
-    );
+  if (!storageReady) {
+    announce("Saved tasks could not be loaded. Changes were not saved.");
+    return false;
+  }
 
+  try {
+    TrackTask.saveTasks(tasks);
+    return true;
+  } catch (error) {
+    announce(error.message);
+    tasks = loadTasks();
     return false;
   }
 }
 
 function displayStatus(task) {
-  if (task.status === "completed") {
+  if (task.status === "Completed") {
     return "completed";
   }
 
-  return task.dueDate < localDate() ? "overdue" : "in-progress";
+  if (task.dueDate < TrackTask.today()) {
+    return "overdue";
+  }
+
+  if (task.status === "To-Do") {
+    return "to-do";
+  }
+
+  return "in-progress";
 }
 
 function render() {
-  const completed = tasks.filter(
-    (task) => task.status === "completed"
-  ).length;
+const summary = TrackTask.getSummary(tasks);
 
-  const overdue = tasks.filter(
-    (task) => displayStatus(task) === "overdue"
-  ).length;
+const completed = summary.completed;
+const overdue = summary.overdue;
+const percent = summary.progress;
 
-  const percent = tasks.length
-    ? Math.round(completed / tasks.length * 100)
-    : 0;
-
-  $("in-progress-count").textContent =
-    tasks.length - completed - overdue;
-
-  $("completed-count").textContent = completed;
-  $("overdue-count").textContent = overdue;
+$("in-progress-count").textContent = summary.inProgress;
+$("completed-count").textContent = completed;
+$("overdue-count").textContent = overdue;
 
   $("progress-percent").textContent = `${percent}%`;
   $("progress-bar").value = percent;
@@ -203,14 +116,14 @@ function render() {
     const row = document.createElement("li");
 
     row.className =
-      `task-row ${task.status === "completed" ? "task-completed" : ""}`;
+      `task-row ${task.status === "Completed" ? "task-completed" : ""}`;
 
     const label = document.createElement("label");
     label.className = "task-check";
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
-    checkbox.checked = task.status === "completed";
+    checkbox.checked = task.status === "Completed";
 
     checkbox.setAttribute(
       "aria-label",
@@ -219,8 +132,8 @@ function render() {
 
     checkbox.addEventListener("change", () => {
       task.status = checkbox.checked
-        ? "completed"
-        : "in-progress";
+        ? "Completed"
+        : "To-Do";
 
       const saved = saveTasks();
 
@@ -297,8 +210,6 @@ $("show-form").addEventListener("click", () => {
     String(opening)
   );
 
-  $("task-date").min = localDate();
-
   if (opening) {
     $("task-title").focus();
   }
@@ -312,6 +223,11 @@ $("priority-filter").addEventListener("change", render);
 
 $("task-form").addEventListener("submit", (event) => {
   event.preventDefault();
+  
+  if (!storageReady) {
+  announce("Tasks cannot be saved until browser storage is available.");
+  return;
+}
 
   $("task-form")
     .querySelectorAll("[aria-invalid]")
@@ -326,26 +242,26 @@ $("task-form").addEventListener("submit", (event) => {
   const dueDate = $("task-date").value;
   const priority = $("task-priority").value;
 
-  if (title.length < 3 || title.length > 80) {
-    return showError(
-      "task-title",
-      "Enter a task title with 3–80 characters."
-    );
-  }
+  if (title.length < 1 || title.length > 100) {
+  return showError(
+    "task-title",
+    "Enter a task title with 1–100 characters."
+  );
+}
 
-  if (description.length > 300) {
-    return showError(
-      "task-description",
-      "Keep the description within 300 characters."
-    );
-  }
+if (description.length > 1000) {
+  return showError(
+    "task-description",
+    "Keep the description within 1,000 characters."
+  );
+}
 
-  if (!validDate(dueDate) || dueDate < localDate()) {
-    return showError(
-      "task-date",
-      "Choose today or a future date."
-    );
-  }
+  if (!TrackTask.validDate(dueDate)) {
+  return showError(
+    "task-date",
+    "Choose a valid due date."
+  );
+}
 
   if (!priorities.includes(priority)) {
     return showError(
@@ -354,14 +270,16 @@ $("task-form").addEventListener("submit", (event) => {
     );
   }
 
-  tasks.unshift({
-    id: `task-${Date.now()}-${Math.random().toString(36).slice(2)}`,
-    title,
-    description,
-    dueDate,
-    priority,
-    status: "in-progress"
-  });
+tasks.unshift({
+  id: `task-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+  title,
+  description,
+  dueDate,
+  priority,
+  status: "To-Do",
+  category: "",
+  tags: []
+});
 
   const saved = saveTasks();
 
@@ -384,7 +302,4 @@ window.addEventListener("storage", (event) => {
   }
 });
 
-$("task-date").min = localDate();
-
-saveTasks();
 render();
