@@ -3,12 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Task Manager dashboard">
+  <meta name="description" content="Track Task dashboard">
 
-  <title>Dashboard | Task Manager</title>
+  <title>Dashboard | Track Task</title>
 
   <link rel="stylesheet" href="dashboard.css">
-  <script src="dashboard.js" defer></script>
+ <script src="js/task-store.js" defer></script>
+<script src="dashboard.js" defer></script>
 </head>
 
 <body>
@@ -18,12 +19,12 @@
 
   <div class="app">
     <aside class="sidebar">
-      <p class="brand">Track Tasks</p>
+      <p class="brand">Track Task</p>
 
       <nav aria-label="Main navigation">
         <a href="dashboard.html" aria-current="page">Dashboard</a>
         <a href="tasks.html">My Tasks</a>
-        <a href="calendar.html">Calendar</a>
+        <a href="#planned-features">Calendar</a>
         <a href="#reminders">Notifications</a>
         <a href="#progress">Progress Reports</a>
       </nav>
@@ -31,7 +32,7 @@
 
     <div class="workspace">
       <header class="topbar">
-        <span>Track Tasks</span>
+        <span>Track Task</span>
 
         <span class="user">
           <span class="avatar" aria-hidden="true">SA</span>
@@ -79,17 +80,17 @@
               id="task-title"
               name="title"
               required
-              minlength="3"
-              maxlength="80"
+              minlength="1"
+              maxlength="100"
               aria-describedby="title-help form-error"
             >
-            <small id="title-help">Enter 3–80 characters.</small>
+            <small id="title-help">Enter 1–100 characters.</small>
 
             <label for="task-description">Description</label>
             <textarea
               id="task-description"
               name="description"
-              maxlength="300"
+              maxlength="1000"
               rows="3"
               aria-describedby="form-error"
             ></textarea>
@@ -113,9 +114,9 @@
                   name="priority"
                   aria-describedby="form-error"
                 >
-                  <option value="low">Low</option>
-                  <option value="medium" selected>Medium</option>
-                  <option value="high">High</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium" selected>Medium</option>
+                  <option value="High">High</option>
                 </select>
               </div>
             </div>
@@ -169,6 +170,7 @@
               <label for="status-filter">Status</label>
               <select id="status-filter">
                 <option value="all">All statuses</option>
+                <option value="to-do">To-Do</option>
                 <option value="in-progress">In progress</option>
                 <option value="completed">Completed</option>
                 <option value="overdue">Overdue</option>
@@ -179,9 +181,9 @@
               <label for="priority-filter">Priority</label>
               <select id="priority-filter">
                 <option value="all">All priorities</option>
-                <option value="high">High</option>
-                <option value="medium">Medium</option>
-                <option value="low">Low</option>
+                <option value="High">High</option>
+                <option value="Medium">Medium</option>
+                <option value="Low">Low</option>
               </select>
             </div>
           </div>
@@ -228,6 +230,10 @@
         >
           <h2 id="reminders-heading">Deadline reminders</h2>
           <p id="reminder-text"></p>
+        </section>
+        <section id="planned-features" class="panel">
+        <h2>Planned Features</h2>
+        <p>The calendar is planned for a later version.</p>
         </section>
       </main>
     </div>
