@@ -11,6 +11,7 @@ Project: Task Management System
 - dashboard.css: Styling, responsive layout, and focus indicators.
 - dashboard.js: Task data, validation, filtering, completion,
   browser storage, and progress calculations.
+- js/task-store.js: Shared task storage, validation, and summary calculations.
 
 ## Running the dashboard
 
@@ -40,11 +41,11 @@ It does not implement a backend or real authentication.
 
 ## Integration notes
 
-Task storage key: trackTasks.tasks.v1
+Task storage key: trackTask.tasks.v1
 
-Confirm that tasks.html and calendar.html match
-the team's implemented filenames.
-
+My Tasks links to tasks.html.
+Calendar links to the planned-features section.
+The dashboard and My Tasks use js/task-store.js.
 ## Known issues
 
 Record any remaining issues here.
