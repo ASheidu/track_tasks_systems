@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login | Track Task</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to main content</a>
+
+  <header class="header">
+    <a class="brand" href="login.html">Track Task</a>
+    <p>Get things done, one task at a time.</p>
+  </header>
+
+  <main class="container" id="main">
+    <aside class="left-side">
+      <h1>Welcome Back!</h1>
+      <p>
+        Explore the Track Task dashboard with a
+        demonstration sign-in.
+      </p>
+
+      <h2>Manage Your Tasks</h2>
+      <ul>
+        <li>Organize your daily tasks</li>
+        <li>Set priorities and deadlines</li>
+        <li>Track your progress</li>
+      </ul>
+
+      <p class="demo-note">
+        <strong>Demo Only:</strong>
+        This project does not use real authentication.
+        Please do not enter a password you use for a real account.
+      </p>
+    </aside>
+
+    <section class="right-side" aria-labelledby="loginTitle">
+      <h2 id="loginTitle">Demo Login</h2>
+
+      <p>Enter a sample email and a made-up password to continue.</p>
+
+      <form id="loginForm" novalidate>
+        <div class="form-row">
+          <label for="loginEmail">
+            Email Address <span class="star">*</span>
+          </label>
+
+          <input
+            type="email"
+            id="loginEmail"
+            name="loginEmail"
+            autocomplete="off"
+            placeholder="example@email.com"
+            required
+          >
+        </div>
+
+        <div class="form-row">
+          <label for="loginPassword">
+            Demo Password <span class="star">*</span>
+          </label>
+
+          <input
+            type="password"
+            id="loginPassword"
+            name="loginPassword"
+            autocomplete="off"
+            placeholder="Enter demo password"
+            minlength="8"
+            required
+            aria-describedby="loginPassNote"
+          >
+
+          <small class="note" id="loginPassNote">
+            Enter at least 8 characters. This is not real authentication.
+          </small>
+
+          <label class="inline-choice">
+            <input
+              type="checkbox"
+              class="toggle-password"
+              data-target="loginPassword"
+            >
+            Show Password
+          </label>
+        </div>
+
+        <p id="loginError" class="err" role="alert" aria-live="assertive"></p>
+
+        <button type="submit" class="submit-btn">
+          Enter Demo Dashboard
+        </button>
+      </form>
+
+      <p class="switch-page">
+        Don't have an account?
+        <a href="register.html">Register Here</a>
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    Track Task | CSCI 426 Frontend Prototype
+  </footer>
+</body>
+</html>
