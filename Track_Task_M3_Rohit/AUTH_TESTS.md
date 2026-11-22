@@ -73,6 +73,17 @@ using PHP and MySQL for the Track Task website.
 - Confirmed both validation checks work independently.
 - Both duplicate registration attempts were rejected.
 
+### 9. Server-Side Password Confirmation — PASS
+
+- Opened the Registration page in Microsoft Edge.
+- Disabled JavaScript using browser Developer Tools.
+- Submitted a registration form with two different passwords.
+- PHP rejected the invalid registration request.
+- The page displayed "Passwords must match."
+- The error appeared below the Confirm Password field.
+- Confirmed password validation works without JavaScript.
+- No account was created from the invalid submission.
+
 ## Security Features Implemented
 
 ### Password Security
@@ -80,6 +91,8 @@ using PHP and MySQL for the Track Task website.
 - Passwords are hashed using password_hash().
 - Login verifies passwords using password_verify().
 - Plaintext passwords are not stored in the users table.
+- Password confirmation is validated on the server.
+- JavaScript also checks password strength and matching.
 
 ### Database Security
 
@@ -101,8 +114,11 @@ using PHP and MySQL for the Track Task website.
 
 - Registration uses server-side validation.
 - Duplicate email and username checks are implemented.
+- Duplicate checks work independently.
 - CSRF tokens protect POST requests.
 - Authentication errors use generic messages.
+- JavaScript validation is not required for PHP validation
+  to reject mismatched passwords.
 
 ## Pending Integration Tests
 
@@ -127,12 +143,15 @@ may return a 404 Not Found response.
 
 ## Conclusion
 
-The individual authentication functionality has
-passed its initial registration, login, logout,
-access-control, session-expiration, invalid-password,
-duplicate-registration, and independent duplicate
-validation tests.
+The individual authentication functionality has passed
+its initial registration, login, logout, access-control,
+session-expiration, invalid-password, duplicate-registration,
+independent duplicate-validation, and server-side password
+confirmation tests.
 
-Final Dashboard integration and full application
-testing are still required before Milestone 3
-submission.
+The PHP password confirmation test also demonstrated that
+the application rejects mismatched passwords when
+JavaScript is disabled.
+
+Final Dashboard integration and full application testing
+are still required before Milestone 3 submission.
