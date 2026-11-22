@@ -4,40 +4,114 @@
 ## Team CTRL — Milestone 3
 
 ### My Contribution
-Login, Registration, and Logout using PHP and MySQL.
+
+Implemented Login, Registration, and Logout functionality
+using PHP and MySQL for the Track Task website.
 
 ## Tests Completed
 
 ### 1. User Registration — PASS
+
 - Created a test account successfully.
 - User information was saved in MySQL.
-- Redirected to Login after registration.
+- Registration redirected to the Login page.
+- The success message was displayed correctly.
 
 ### 2. Login Authentication — PASS
+
 - Logged in using registered credentials.
-- Authentication redirected toward dashboard.php.
+- The credentials were verified successfully.
+- Login redirected toward dashboard.php.
 - Dashboard integration is still pending.
 
 ### 3. Protected Page Access — PASS
+
 - Accessed tasks.php after successful login.
+- Confirmed that the authenticated session was active.
 - Unauthenticated access was redirected to Login.
 
 ### 4. Logout — PASS
-- Logged out successfully.
-- Returned to the Login page.
-- Could not access tasks.php without signing in again.
+
+- Logged out using the website's Logout control.
+- Logout returned the user to the Login page.
+- Attempted to reopen tasks.php after logout.
+- Access was denied until the user signed in again.
 
 ### 5. Session Expiration — PASS
+
 - Tested the 30-minute inactivity timeout.
-- Session expired correctly.
-- The Login page displayed the expiration message.
+- Left the authenticated session inactive.
+- Refreshed tasks.php after the inactivity period.
+- The application redirected to the Login page.
+- The message "Your session expired. Please sign in again."
+  was displayed correctly.
+
+### 6. Invalid Password Authentication — PASS
+
+- Entered a registered email with an incorrect password.
+- The Login page displayed "Invalid email or password."
+- Authentication was denied.
+- The user remained on the Login page.
+- The error message did not reveal whether the email
+  or password was incorrect.
+
+## Security Features Implemented
+
+### Password Security
+
+- Passwords are hashed using password_hash().
+- Login verifies passwords using password_verify().
+- Plaintext passwords are not stored in the users table.
+
+### Database Security
+
+- Database access uses prepared SQL statements.
+- SQL queries use parameterized placeholders.
+- The application uses a dedicated MySQL user.
+- Database permissions are limited to SELECT,
+  INSERT, UPDATE, and DELETE.
+
+### Session Security
+
+- PHP sessions maintain authenticated user information.
+- Session IDs are regenerated after successful login.
+- Protected pages require authentication.
+- Sessions expire after 30 minutes of inactivity.
+- Logout destroys the authenticated session.
+
+### Form Security
+
+- Registration uses server-side validation.
+- Duplicate email and username checks are implemented.
+- CSRF tokens protect POST requests.
+- Authentication errors use generic messages.
 
 ## Pending Integration Tests
-- Complete Login to Dashboard flow.
-- Verify Dashboard functionality after team integration.
-- Final end-to-end testing.
+
+- Complete Login-to-Dashboard navigation.
+- Verify the Dashboard displays the correct signed-in user.
+- Confirm Dashboard and My Tasks integration.
+- Final end-to-end testing after team integration.
+- Final responsive design and accessibility checks.
+
+## Known Limitation
+
+The Login page redirects to dashboard.php after
+successful authentication.
+
+The Dashboard is maintained by another team member
+and has not yet been integrated into the local branch.
+
+Until integration is complete, the Dashboard URL
+may return a 404 Not Found response.
 
 ## Conclusion
-The individual authentication features have passed
-their initial functional tests. Team integration
-testing is still required.
+
+The individual authentication functionality has
+passed its initial registration, login, logout,
+access-control, invalid-password, and session-expiration
+tests.
+
+Final Dashboard integration and full application
+testing are still required before Milestone 3
+submission.
