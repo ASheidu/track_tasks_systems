@@ -58,12 +58,20 @@ using PHP and MySQL for the Track Task website.
 
 ### 7. Duplicate Account Registration — PASS
 
-- Submitted the registration form using an existing email.
+- Submitted registration using an existing email
+  and an existing username.
 - The application displayed "This email is already registered."
-- Submitted an existing username.
 - The application displayed "This username is already taken."
-- Duplicate registration was prevented.
-- The validation was performed using the MySQL database.
+- Duplicate registration was rejected.
+
+### 8. Independent Duplicate Validation — PASS
+
+- Tested an existing email with a new username.
+- Only the duplicate-email error appeared.
+- Tested a new email with an existing username.
+- Only the duplicate-username error appeared.
+- Confirmed both validation checks work independently.
+- Both duplicate registration attempts were rejected.
 
 ## Security Features Implemented
 
@@ -79,7 +87,7 @@ using PHP and MySQL for the Track Task website.
 - SQL queries use parameterized placeholders.
 - The application uses a dedicated MySQL user.
 - Database permissions are limited to SELECT,
-  INSERT, UPDATE, and DELETE.
+  INSERT, UPDATE, and DELETE on the track_task database.
 
 ### Session Security
 
@@ -117,20 +125,13 @@ and has not yet been integrated into the local branch.
 Until integration is complete, the Dashboard URL
 may return a 404 Not Found response.
 
-### Duplicate Registration Testing
-
-The duplicate email and username checks both passed.
-
-Both fields contained existing values during the test.
-Additional independent tests can verify each duplicate
-condition separately.
-
 ## Conclusion
 
 The individual authentication functionality has
 passed its initial registration, login, logout,
 access-control, session-expiration, invalid-password,
-and duplicate-registration tests.
+duplicate-registration, and independent duplicate
+validation tests.
 
 Final Dashboard integration and full application
 testing are still required before Milestone 3
