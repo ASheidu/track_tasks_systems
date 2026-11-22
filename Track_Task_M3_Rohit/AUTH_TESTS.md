@@ -28,7 +28,8 @@ using PHP and MySQL for the Track Task website.
 
 - Accessed tasks.php after successful login.
 - Confirmed that the authenticated session was active.
-- Unauthenticated access was redirected to Login.
+- Attempted to access tasks.php after logout.
+- Unauthenticated access redirected to Login.
 
 ### 4. Logout — PASS
 
@@ -54,6 +55,15 @@ using PHP and MySQL for the Track Task website.
 - The user remained on the Login page.
 - The error message did not reveal whether the email
   or password was incorrect.
+
+### 7. Duplicate Account Registration — PASS
+
+- Submitted the registration form using an existing email.
+- The application displayed "This email is already registered."
+- Submitted an existing username.
+- The application displayed "This username is already taken."
+- Duplicate registration was prevented.
+- The validation was performed using the MySQL database.
 
 ## Security Features Implemented
 
@@ -94,7 +104,9 @@ using PHP and MySQL for the Track Task website.
 - Final end-to-end testing after team integration.
 - Final responsive design and accessibility checks.
 
-## Known Limitation
+## Known Limitations
+
+### Dashboard Integration
 
 The Login page redirects to dashboard.php after
 successful authentication.
@@ -105,12 +117,20 @@ and has not yet been integrated into the local branch.
 Until integration is complete, the Dashboard URL
 may return a 404 Not Found response.
 
+### Duplicate Registration Testing
+
+The duplicate email and username checks both passed.
+
+Both fields contained existing values during the test.
+Additional independent tests can verify each duplicate
+condition separately.
+
 ## Conclusion
 
 The individual authentication functionality has
 passed its initial registration, login, logout,
-access-control, invalid-password, and session-expiration
-tests.
+access-control, session-expiration, invalid-password,
+and duplicate-registration tests.
 
 Final Dashboard integration and full application
 testing are still required before Milestone 3
