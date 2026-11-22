@@ -15,6 +15,15 @@ $query = db()->prepare("
 
 $query->execute([$today, $userId]);
 $counts = $query->fetch();
+$total = (int) $counts['total'];
+$inProgress = (int) $counts['in_progress'];
+$completed = (int) $counts['completed'];
+$overdue = (int) $counts['overdue'];
+
+$percent = 0;
+if ($total > 0) {
+    $percent = (int) round(($completed / $total) * 100);
+}
 
 $pageTitle = 'Dashboard';
 $activePage = 'dashboard';
