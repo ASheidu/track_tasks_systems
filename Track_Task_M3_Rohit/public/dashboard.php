@@ -34,5 +34,24 @@ require __DIR__ . '/../includes/workspace.php';
     <h1>Dashboard</h1>
     <a class="button" href="tasks.php?mode=add#task-form">Add Task</a>
 </div>
+<section aria-labelledby="overview-title">
+    <h2 id="overview-title">Task overview</h2>
 
+    <dl class="dashboard-stats">
+        <div class="panel<?= $overdue > 0 ? ' dashboard-alert' : '' ?>">
+            <dt>Overdue</dt>
+            <dd><?= $overdue ?></dd>
+        </div>
+
+        <div class="panel">
+            <dt>In Progress</dt>
+            <dd><?= $inProgress ?></dd>
+        </div>
+
+        <div class="panel">
+            <dt>Completed</dt>
+            <dd><?= $completed ?></dd>
+        </div>
+    </dl>
+</section>
 <?php require __DIR__ . '/../includes/workspace-end.php'; ?>
