@@ -94,6 +94,16 @@ using PHP and MySQL for the Track Task website.
 - Re-enabled JavaScript and refreshed the page.
 - Verified that the Show Password checkbox works.
 
+### 11. Logout GET Request Security — PASS
+
+- Signed in using a registered test account.
+- Confirmed that the protected My Tasks page opened.
+- Opened logout.php directly using a GET request.
+- The server displayed "Logout requires a POST request."
+- Returned to the My Tasks page without signing in again.
+- Confirmed the authenticated session remained active.
+- Verified that GET requests cannot log users out.
+
 ## Security Features Implemented
 
 ### Password Security
@@ -120,6 +130,7 @@ using PHP and MySQL for the Track Task website.
 - Protected pages require authentication.
 - Sessions expire after 30 minutes of inactivity.
 - Logout destroys the authenticated session.
+- A rejected GET logout request preserves the session.
 
 ### Form Security
 
@@ -129,6 +140,7 @@ using PHP and MySQL for the Track Task website.
 - CSRF tokens protect POST requests.
 - Authentication errors use generic messages.
 - Validation works even when JavaScript is disabled.
+- Logout accepts POST requests only.
 
 ## Pending Integration Tests
 
@@ -157,13 +169,16 @@ The individual authentication functionality has passed
 its initial registration, login, logout, access-control,
 session-expiration, invalid-password, duplicate-registration,
 independent duplicate-validation, server-side password
-confirmation, and server-side password strength tests.
+confirmation, server-side password strength, and
+POST-only logout security tests.
 
 Testing with JavaScript disabled confirmed that the
 PHP backend independently enforces password validation.
 
-After JavaScript was re-enabled, the Show Password
-functionality also worked correctly.
+Testing a direct GET request to logout.php confirmed
+that the application rejects the request while
+preserving the authenticated session.
 
-Final Dashboard integration and full application testing
-are still required before Milestone 3 submission.
+Final Dashboard integration and full application
+testing are still required before Milestone 3
+submission.
