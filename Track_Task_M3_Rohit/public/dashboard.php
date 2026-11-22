@@ -27,6 +27,7 @@ if ($total > 0) {
 
 $pageTitle = 'Dashboard';
 $activePage = 'dashboard';
+$pageCss = 'css/dashboard.css';
 require __DIR__ . '/../includes/workspace.php';
 ?>
 
