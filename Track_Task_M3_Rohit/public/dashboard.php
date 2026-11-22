@@ -54,4 +54,18 @@ require __DIR__ . '/../includes/workspace.php';
         </div>
     </dl>
 </section>
+<section class="panel dashboard-progress" aria-labelledby="completion-title">
+    <div class="row split">
+        <h2 id="completion-title">Overall completion</h2>
+        <strong><?= $percent ?>%</strong>
+    </div>
+
+    <progress aria-labelledby="completion-title" max="100" value="<?= $percent ?>">
+        <?= $percent ?>%
+    </progress>
+
+    <p class="muted">
+        <?= $completed ?> of <?= $total ?> <?= $total === 1 ? 'task' : 'tasks' ?> completed.
+    </p>
+</section>
 <?php require __DIR__ . '/../includes/workspace-end.php'; ?>
