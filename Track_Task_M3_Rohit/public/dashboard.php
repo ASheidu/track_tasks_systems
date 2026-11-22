@@ -34,6 +34,11 @@ require __DIR__ . '/../includes/workspace.php';
     <h1>Dashboard</h1>
     <a class="button" href="tasks.php?mode=add#task-form">Add Task</a>
 </div>
+<?php if ($total === 0): ?>
+    <p class="panel">
+        <strong>No tasks yet.</strong> Choose Add Task to save your first task.
+    </p>
+<?php endif; ?>
 <section aria-labelledby="overview-title">
     <h2 id="overview-title">Task overview</h2>
 
