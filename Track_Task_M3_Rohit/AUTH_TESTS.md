@@ -13,7 +13,7 @@ using PHP and MySQL for the Track Task website.
 ### 1. User Registration — PASS
 
 - Created a test account successfully.
-- User information was saved in MySQL.
+- Registration saved user information in MySQL.
 - Registration redirected to the Login page.
 - The success message was displayed correctly.
 
@@ -76,13 +76,23 @@ using PHP and MySQL for the Track Task website.
 ### 9. Server-Side Password Confirmation — PASS
 
 - Opened the Registration page in Microsoft Edge.
-- Disabled JavaScript using browser Developer Tools.
-- Submitted a registration form with two different passwords.
+- Disabled JavaScript using Developer Tools.
+- Submitted two different passwords.
 - PHP rejected the invalid registration request.
 - The page displayed "Passwords must match."
-- The error appeared below the Confirm Password field.
+- The error appeared below Confirm Password.
 - Confirmed password validation works without JavaScript.
-- No account was created from the invalid submission.
+
+### 10. Server-Side Password Strength Validation — PASS
+
+- Disabled JavaScript in Microsoft Edge Developer Tools.
+- Submitted a password without an uppercase letter.
+- PHP rejected the registration.
+- The message "Use 8–64 characters with a capital letter
+  and a number." appeared.
+- Confirmed password requirements are enforced server-side.
+- Re-enabled JavaScript and refreshed the page.
+- Verified that the Show Password checkbox works.
 
 ## Security Features Implemented
 
@@ -92,7 +102,8 @@ using PHP and MySQL for the Track Task website.
 - Login verifies passwords using password_verify().
 - Plaintext passwords are not stored in the users table.
 - Password confirmation is validated on the server.
-- JavaScript also checks password strength and matching.
+- Password complexity is validated on the server.
+- JavaScript checks password strength and confirmation.
 
 ### Database Security
 
@@ -117,8 +128,7 @@ using PHP and MySQL for the Track Task website.
 - Duplicate checks work independently.
 - CSRF tokens protect POST requests.
 - Authentication errors use generic messages.
-- JavaScript validation is not required for PHP validation
-  to reject mismatched passwords.
+- Validation works even when JavaScript is disabled.
 
 ## Pending Integration Tests
 
@@ -146,12 +156,14 @@ may return a 404 Not Found response.
 The individual authentication functionality has passed
 its initial registration, login, logout, access-control,
 session-expiration, invalid-password, duplicate-registration,
-independent duplicate-validation, and server-side password
-confirmation tests.
+independent duplicate-validation, server-side password
+confirmation, and server-side password strength tests.
 
-The PHP password confirmation test also demonstrated that
-the application rejects mismatched passwords when
-JavaScript is disabled.
+Testing with JavaScript disabled confirmed that the
+PHP backend independently enforces password validation.
+
+After JavaScript was re-enabled, the Show Password
+functionality also worked correctly.
 
 Final Dashboard integration and full application testing
 are still required before Milestone 3 submission.
