@@ -1,4 +1,3 @@
-
 <?php
 // Track Task - Team CTRL - Milestone 3
 // Secure Logout
