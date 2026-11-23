@@ -22,7 +22,7 @@ using PHP and MySQL for the Track Task website.
 - Logged in using registered credentials.
 - The credentials were verified successfully.
 - Login redirected toward dashboard.php.
-- Dashboard integration is still pending.
+- Combined Dashboard navigation was subsequently tested by Rohit.
 
 ### 3. Protected Page Access — PASS
 
@@ -142,26 +142,17 @@ using PHP and MySQL for the Track Task website.
 - Validation works even when JavaScript is disabled.
 - Logout accepts POST requests only.
 
-## Pending Integration Tests
+## Combined local integration testing
 
-- Complete Login-to-Dashboard navigation.
-- Verify the Dashboard displays the correct signed-in user.
-- Confirm Dashboard and My Tasks integration.
-- Final end-to-end testing after team integration.
-- Final responsive design and accessibility checks.
+Rohit reported that the merged project passed local checks for
+registration, login, Dashboard navigation, the displayed user name,
+protected pages, logout, session expiration, and account isolation.
 
-## Known Limitations
+## Remaining checks
 
-### Dashboard Integration
-
-The Login page redirects to dashboard.php after
-successful authentication.
-
-The Dashboard is maintained by another team member
-and has not yet been integrated into the local branch.
-
-Until integration is complete, the Dashboard URL
-may return a 404 Not Found response.
+Repeat the account flow on the deployed website and capture final
+screenshots. Check the latest skip-link, error-description, and focus
+changes in the local browser after downloading the updated branch.
 
 ## Conclusion
 
@@ -179,6 +170,6 @@ Testing a direct GET request to logout.php confirmed
 that the application rejects the request while
 preserving the authenticated session.
 
-Final Dashboard integration and full application
-testing are still required before Milestone 3
-submission.
+Combined local integration testing has been reported as passed by Rohit.
+Deployment testing and verification of the latest accessibility changes
+remain required before submission.

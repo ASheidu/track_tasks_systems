@@ -1,9 +1,12 @@
-# Track Task — Milestone 3 / Rohit's part
+# Track Task — Milestone 3
 
-This package provides the shared MySQL schema, connection/session helpers,
-workspace theme and layout, and the PHP My Tasks page. It is an integration
-package for Team CTRL. Amrit's login, registration and logout routes and
-Sheidu's dashboard route must be added before the normal user flow can run.
+Track Task is a server-rendered task management website built with PHP
+and MySQL. It includes registration, login, logout, a Dashboard, and
+My Tasks.
+
+Amrit developed the account pages, Sheidu developed the Dashboard,
+and Rohit developed My Tasks and the shared database, helpers, and
+workspace layout. The pages are combined in the milestone3 branch.
 
 ## Local setup
 
@@ -15,8 +18,8 @@ Sheidu's dashboard route must be added before the normal user flow can run.
    settings. Use an app database account with SELECT, INSERT, UPDATE and
    DELETE permissions on track_task. Use a separate account for schema setup.
 4. From this folder run: `php -S localhost:8000 -t public`
-5. After integrating Amrit's and Sheidu's routes, open
-   http://localhost:8000/. The PHP server replaces VS Code Live Server.
+5. Open http://localhost:8000/. Sign in or register an account.
+   The PHP server replaces VS Code Live Server.
    Keep the server's document root at public/ so configuration, schema, and
    internal helpers cannot be downloaded as public files.
 

@@ -202,7 +202,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </header>
 
-<main class="account-layout" id="main">
+<main class="account-layout" id="main" tabindex="-1">
 
     <aside class="account-intro">
 

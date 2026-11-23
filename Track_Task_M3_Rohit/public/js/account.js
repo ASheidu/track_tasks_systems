@@ -3,6 +3,17 @@
 /* Login and Registration JavaScript */
 
 document.addEventListener("DOMContentLoaded", function () {
+    // Focus the first field rejected by server-side validation.
+    const firstInvalidField =
+        document.querySelector('.account-field [aria-invalid="true"]');
+    const loginError = document.getElementById("login-error");
+
+    if (firstInvalidField) {
+        firstInvalidField.focus();
+    } else if (loginError) {
+        document.getElementById("loginEmail").focus();
+    }
+
 
     // Show and Hide Password
     document.querySelectorAll("[data-show-password]").forEach(function (toggle) {

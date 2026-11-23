@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 </header>
 
-<main id="main" class="account-layout">
+<main id="main" class="account-layout" tabindex="-1">
 
     <aside class="account-intro">
         <h1>Welcome Back!</h1>
@@ -152,7 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         <?php if ($error): ?>
 
-            <p class="error" role="alert">
+            <p id="login-error" class="error" role="alert">
                 <?= h($error) ?>
             </p>
 
@@ -183,6 +183,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     maxlength="254"
                     autocomplete="email"
                     value="<?= h($email) ?>"
+                    <?= $error !== '' ? 'aria-describedby="login-error"' : '' ?>
                     required
                 >
             </div>
@@ -197,6 +198,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     id="loginPassword"
                     name="loginPassword"
                     autocomplete="current-password"
+                    <?= $error !== '' ? 'aria-describedby="login-error"' : '' ?>
                     required
                 >
 
