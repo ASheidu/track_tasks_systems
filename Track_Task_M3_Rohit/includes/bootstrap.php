@@ -70,17 +70,26 @@ function db(): PDO
     $file = __DIR__ . '/../config.local.php';
     $local = is_file($file) ? require $file : [];
     $settings = [];
-    foreach (['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD'] as $key) {
+    foreach (['DB_HOST', 'DB_PORT', 'DB_NAME', 'DB_USER', 'DB_PASSWORD', 'DB_SSL_CA'] as $key) {
         $settings[$key] = getenv($key) !== false ? getenv($key) : ($local[$key] ?? '');
     }
     $dsn = 'mysql:host=' . ($settings['DB_HOST'] ?: '127.0.0.1')
         . ';port=' . ($settings['DB_PORT'] ?: '3306')
         . ';dbname=' . $settings['DB_NAME'] . ';charset=utf8mb4';
-    $pdo = new PDO($dsn, $settings['DB_USER'], $settings['DB_PASSWORD'], [
+    $options = [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_EMULATE_PREPARES => false,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-    ]);
+    ];
+    // Local Wampserver needs no certificate. The hosted connection verifies TLS.
+    if ($settings['DB_SSL_CA'] !== '') {
+        if (!is_readable($settings['DB_SSL_CA'])) {
+            throw new RuntimeException('Database CA certificate is unavailable.');
+        }
+        $options[PDO::MYSQL_ATTR_SSL_CA] = $settings['DB_SSL_CA'];
+        $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+    }
+    $pdo = new PDO($dsn, $settings['DB_USER'], $settings['DB_PASSWORD'], $options);
     return $pdo;
 }
 
