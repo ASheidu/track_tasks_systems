@@ -1,0 +1,4 @@
+/config.local.php
+/.env
+/check-db.php
+/public/local-task-test.php

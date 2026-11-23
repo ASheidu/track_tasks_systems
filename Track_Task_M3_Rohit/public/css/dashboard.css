@@ -1,0 +1,48 @@
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+.dashboard-stats .panel {
+    margin: 0;
+}
+
+.dashboard-stats dt {
+    font-weight: 700;
+}
+
+.dashboard-stats dd {
+    margin: .25rem 0 0;
+    font-size: 2.25rem;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.dashboard-stats .dashboard-alert {
+    border-inline-start: .35rem solid var(--danger);
+    color: var(--danger);
+}
+
+.dashboard-progress h2 {
+    margin: 0;
+}
+
+.dashboard-progress strong {
+    color: var(--blue);
+    font-size: 1.5rem;
+}
+
+.dashboard-progress progress {
+    display: block;
+    width: 100%;
+    height: 1rem;
+    margin-top: .75rem;
+    accent-color: var(--blue);
+}
+
+@media (max-width: 760px) {
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+}

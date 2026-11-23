@@ -1,0 +1,7 @@
+config.local.php
+.env
+.git
+check-db.php
+public/local-task-test.php
+*.pem
+*.crt
