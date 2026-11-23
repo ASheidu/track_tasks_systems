@@ -131,8 +131,22 @@ require __DIR__ . '/../includes/workspace.php';
                 . (($firstError === $field || ($firstError === '' && $field === 'title')) ? ' autofocus' : '')
                 . ($field === 'category' ? ' list="saved-categories"' : '')
                 . (isset($limits[$field]) ? ' maxlength="' . $limits[$field] . '"' : '')
-                . (isset($errors[$field]) ? ' aria-invalid="true" aria-describedby="error-' . $field . '"' 
-                    : ($field === 'tags' ? ' aria-describedby="tag-help"' : ''));
+                . (isset($errors[$field]) ? ' aria-invalid="true"' : '');
+            // Keep instructions available alongside validation errors.
+            $helpIds = [];
+            if ($field === 'tags') {
+                $helpIds[] = 'tag-help';
+            } elseif ($field === 'category') {
+                $helpIds[] = 'category-help';
+            } elseif ($field === 'due_date') {
+                $helpIds[] = 'date-help';
+            }
+            if (isset($errors[$field])) {
+                $helpIds[] = 'error-' . $field;
+            }
+            if ($helpIds) {
+                $attrs .= ' aria-describedby="' . implode(' ', $helpIds) . '"';
+            }
         ?>
             <div class="<?= in_array($field, ['title', 'description', 'tags'], true) ? 'full' : '' ?>">
                 <label for="task-<?= $field ?>"><?= h($labels[$field]) ?><?= $required ? ' (required)' : '' ?></label>
@@ -146,6 +160,8 @@ require __DIR__ . '/../includes/workspace.php';
                     <input type="<?= $field === 'due_date' ? 'date' : 'text' ?>" value="<?= h($task[$field]) ?>"<?= $attrs ?>>
                 <?php endif; ?>
                 <?php if ($field === 'tags'): ?><small id="tag-help">Separate tags with commas. Up to 10 tags.</small><?php endif; ?>
+                <?php if ($field === 'category'): ?><small id="category-help">Choose a saved category or type a new one. This field is optional.</small><?php endif; ?>
+                <?php if ($field === 'due_date'): ?><small id="date-help">Past dates are allowed. Unfinished tasks become overdue after their due date.</small><?php endif; ?>
                 <?php if (isset($errors[$field])): ?><p id="error-<?= $field ?>"><?= h($errors[$field]) ?></p><?php endif; ?>
             </div>
         <?php endforeach; ?>
