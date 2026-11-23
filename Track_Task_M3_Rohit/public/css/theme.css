@@ -62,3 +62,19 @@ button:hover, .button:hover { background: #2448c4; }
 .task-table th:last-child { width: 25%; }
 .task-detail { display: block; color: var(--muted); font-weight: 400; font-size: .9375rem; white-space: pre-wrap; }
 .overdue { display: inline-block; margin-top: .3rem; }
+
+@media (min-width: 761px) {
+    .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        height: 100dvh;
+        align-self: start;
+        overflow-y: auto;
+    }
+}
+
+/* Allow the main content to shrink on smaller screens. */
+.workspace-content {
+    min-width: 0;
+}
