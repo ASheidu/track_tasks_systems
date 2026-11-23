@@ -7,6 +7,7 @@ $db = db();
 $today = date('Y-m-d');
 $pageTitle = 'My Tasks';
 $activePage = 'tasks';
+$pageCss = 'css/tasks.css';
 
 $fields = ['title', 'description', 'due_date', 'priority', 'status', 'category', 'tags'];
 $task = ['title' => '', 'description' => '', 'due_date' => $today, 'priority' => 'Medium',
@@ -74,6 +75,14 @@ if ($filterError === '') {
     $tasks = [];
 }
 
+// Saved categories belong only to the signed-in account.
+$categoryQuery = $db->prepare('SELECT DISTINCT category FROM tasks
+    WHERE user_id = ? AND category <> ? ORDER BY category');
+$categoryQuery->execute([$userId, '']);
+$categories = $categoryQuery->fetchAll(PDO::FETCH_COLUMN);
+$hasAdvancedFilters = $filters['priority'] !== '' || $filters['due_date'] !== '';
+$firstError = $errors ? array_key_first($errors) : '';
+
 function options(array $choices, string $current): void
 {
     foreach ($choices as $choice) {
@@ -84,8 +93,8 @@ function options(array $choices, string $current): void
 
 require __DIR__ . '/../includes/workspace.php';
 ?>
-<div class="row split">
-    <div><h1>My Tasks</h1><p class="muted">Create, organize, and update your tasks.</p></div>
+<div class="row split task-page-heading">
+    <div><p class="eyebrow">YOUR WORKSPACE</p><h1>My Tasks</h1><p class="muted">Create, organize, and update your tasks.</p></div>
     <a class="button" href="tasks.php?mode=add#task-form">Add Task</a>
 </div>
 <?php if ($notice !== ''): ?>
@@ -93,7 +102,7 @@ require __DIR__ . '/../includes/workspace.php';
 <?php endif; ?>
 
 <?php if ($mode === 'add' || $mode === 'edit'): ?>
-<section class="panel" id="task-form" aria-labelledby="form-title">
+<dialog open class="task-editor" id="task-form" aria-labelledby="form-title">
     <h2 id="form-title"><?= $mode === 'edit' ? 'Edit Task' : 'Add Task' ?></h2>
     <?php if ($errors): ?>
         <div class="error" role="alert">
@@ -103,6 +112,10 @@ require __DIR__ . '/../includes/workspace.php';
             <?php endforeach; ?></ul>
         </div>
     <?php endif; ?>
+    <p class="muted">Fields marked “required” must be filled in.</p>
+    <datalist id="saved-categories">
+        <?php foreach ($categories as $category): ?><option value="<?= h($category) ?>"></option><?php endforeach; ?>
+    </datalist>
     <form method="post" action="tasks.php#task-form" class="form-grid">
         <input type="hidden" name="csrf_token" value="<?= h(csrfToken()) ?>">
         <input type="hidden" name="action" value="<?= h($mode) ?>">
@@ -115,9 +128,25 @@ require __DIR__ . '/../includes/workspace.php';
             $required = in_array($field, ['title', 'due_date', 'priority', 'status'], true);
             $attrs = ' id="task-' . $field . '" name="' . $field . '"'
                 . ($required ? ' required' : '')
+                . (($firstError === $field || ($firstError === '' && $field === 'title')) ? ' autofocus' : '')
+                . ($field === 'category' ? ' list="saved-categories"' : '')
                 . (isset($limits[$field]) ? ' maxlength="' . $limits[$field] . '"' : '')
-                . (isset($errors[$field]) ? ' aria-invalid="true" aria-describedby="error-' . $field . '"' 
-                    : ($field === 'tags' ? ' aria-describedby="tag-help"' : ''));
+                . (isset($errors[$field]) ? ' aria-invalid="true"' : '');
+            // Keep instructions available alongside validation errors.
+            $helpIds = [];
+            if ($field === 'tags') {
+                $helpIds[] = 'tag-help';
+            } elseif ($field === 'category') {
+                $helpIds[] = 'category-help';
+            } elseif ($field === 'due_date') {
+                $helpIds[] = 'date-help';
+            }
+            if (isset($errors[$field])) {
+                $helpIds[] = 'error-' . $field;
+            }
+            if ($helpIds) {
+                $attrs .= ' aria-describedby="' . implode(' ', $helpIds) . '"';
+            }
         ?>
             <div class="<?= in_array($field, ['title', 'description', 'tags'], true) ? 'full' : '' ?>">
                 <label for="task-<?= $field ?>"><?= h($labels[$field]) ?><?= $required ? ' (required)' : '' ?></label>
@@ -131,14 +160,16 @@ require __DIR__ . '/../includes/workspace.php';
                     <input type="<?= $field === 'due_date' ? 'date' : 'text' ?>" value="<?= h($task[$field]) ?>"<?= $attrs ?>>
                 <?php endif; ?>
                 <?php if ($field === 'tags'): ?><small id="tag-help">Separate tags with commas. Up to 10 tags.</small><?php endif; ?>
+                <?php if ($field === 'category'): ?><small id="category-help">Choose a saved category or type a new one. This field is optional.</small><?php endif; ?>
+                <?php if ($field === 'due_date'): ?><small id="date-help">Past dates are allowed. Unfinished tasks become overdue after their due date.</small><?php endif; ?>
                 <?php if (isset($errors[$field])): ?><p id="error-<?= $field ?>"><?= h($errors[$field]) ?></p><?php endif; ?>
             </div>
         <?php endforeach; ?>
         <div class="row full"><button type="submit">Save Task</button><a href="tasks.php">Cancel</a></div>
     </form>
-</section>
+</dialog>
 <?php elseif ($mode === 'delete'): ?>
-<section class="panel" aria-labelledby="delete-title">
+<dialog open class="task-editor" id="delete-dialog" aria-labelledby="delete-title">
     <h2 id="delete-title">Delete Task</h2>
     <p>Delete “<?= h($task['title']) ?>”? This cannot be undone.</p>
     <form method="post" action="tasks.php" class="row">
@@ -148,42 +179,62 @@ require __DIR__ . '/../includes/workspace.php';
         <button type="submit" class="danger">Delete Task</button>
         <a href="tasks.php">Cancel</a>
     </form>
-</section>
+</dialog>
 <?php endif; ?>
 
-<section class="panel" aria-labelledby="list-title">
-    <h2 id="list-title">Task list</h2>
+<section class="task-filters" aria-label="Search and filter tasks">
     <?php if ($filterError !== ''): ?><p class="error" role="alert"><?= h($filterError) ?></p><?php endif; ?>
-    <form action="tasks.php" method="get" class="form-grid" role="search" aria-label="Search and filter tasks">
-        <div class="full"><label for="search">Search by keyword</label><input type="search" id="search" name="q" maxlength="100" value="<?= h($filters['q']) ?>"></div>
-        <div><label for="category">Category</label><input id="category" name="category" maxlength="50" value="<?= h($filters['category']) ?>"></div>
-        <div><label for="priority">Priority</label><select id="priority" name="priority"><option value="">All priorities</option><?php options(PRIORITIES, $filters['priority']); ?></select></div>
-        <div><label for="status">Status</label><select id="status" name="status"><option value="">All statuses</option><?php options(STATUSES, $filters['status']); ?></select></div>
-        <div><label for="due_date">Due date</label><input id="due_date" name="due_date" type="date" value="<?= h($filters['due_date']) ?>"></div>
-        <div class="row full"><button type="submit">Apply Search and Filters</button><a href="tasks.php">Clear filters</a></div>
+    <form action="tasks.php" method="get" role="search" aria-label="Search and filter tasks">
+        <div class="filter-toolbar">
+            <div class="keyword"><label for="search">Search tasks</label><input type="search" id="search" name="q" maxlength="100" placeholder="Search titles, descriptions, or tags" value="<?= h($filters['q']) ?>"></div>
+            <div><label for="category">Category</label><select id="category" name="category">
+                <option value="">All categories</option>
+                <?php if ($filters['category'] !== '' && !in_array($filters['category'], $categories, true)): ?>
+                    <option selected value="<?= h($filters['category']) ?>"><?= h($filters['category']) ?></option>
+                <?php endif; ?>
+                <?php options($categories, $filters['category']); ?>
+            </select></div>
+            <div><label for="status">Status</label><select id="status" name="status"><option value="">All statuses</option><?php options(STATUSES, $filters['status']); ?></select></div>
+            <button type="submit">Apply</button>
+            <a class="clear-link" href="tasks.php">Clear</a>
+        </div>
+        <details class="advanced-filters"<?= $hasAdvancedFilters ? ' open' : '' ?>>
+            <summary>More filters<?= $hasAdvancedFilters ? ' (active)' : '' ?></summary>
+            <div class="advanced-grid">
+                <div><label for="priority">Priority</label><select id="priority" name="priority"><option value="">All priorities</option><?php options(PRIORITIES, $filters['priority']); ?></select></div>
+                <div><label for="due_date">Due date</label><input id="due_date" name="due_date" type="date" value="<?= h($filters['due_date']) ?>"></div>
+            </div>
+        </details>
     </form>
-    <p role="status"><?= count($tasks) ?> task(s) shown.</p>
+</section>
+
+<section class="panel task-list-panel" aria-labelledby="list-title">
+    <div class="row split list-heading">
+        <div><h2 id="list-title">Your tasks <span class="count-pill"><?= count($tasks) ?></span></h2>
+        <p class="muted">Your work, one task at a time.</p></div>
+        <p class="results-count" role="status"><?= count($tasks) ?> task(s) match your current filters.</p>
+    </div>
     <?php if ($tasks): ?>
         <div class="table-wrap" tabindex="0" role="region" aria-label="Results table, scrollable on small screens">
             <table class="task-table">
-                <caption>Your tasks</caption>
+                <caption class="visually-hidden">Your tasks with dates, priorities, statuses, and actions</caption>
                 <thead><tr><th scope="col">Task</th><th scope="col">Due date</th><th scope="col">Priority</th><th scope="col">Status</th><th scope="col">Actions</th></tr></thead>
                 <tbody>
                 <?php foreach ($tasks as $row):
                     $rowId = (int) $row['id'];
                     $completed = $row['status'] === 'Completed';
                 ?>
-                    <tr>
-                        <th scope="row"><?= h($row['title']) ?>
+                    <tr class="<?= $completed ? 'is-completed' : '' ?>">
+                        <th scope="row"><span class="task-name"><?= h($row['title']) ?></span>
                             <?php foreach (['category', 'tags', 'description'] as $field): ?>
                                 <?php if (!empty($row[$field])): ?><span class="task-detail"><?= h($row[$field]) ?></span><?php endif; ?>
                             <?php endforeach; ?>
                         </th>
-                        <td><?= h($row['due_date']) ?>
+                        <td><?= h(date('m/d/Y', strtotime($row['due_date']))) ?>
                             <?php if (!$completed && $row['due_date'] < $today): ?><span class="overdue">Overdue</span><?php endif; ?>
                         </td>
-                        <td><?= h($row['priority']) ?></td>
-                        <td><?= h($row['status']) ?></td>
+                        <td><span class="task-badge priority-<?= strtolower($row['priority']) ?>"><?= h($row['priority']) ?></span></td>
+                        <td><span class="task-badge status-<?= strtolower(str_replace(' ', '-', $row['status'])) ?>"><?= $completed ? '✓ ' : '' ?><?= h($row['status']) ?></span></td>
                         <td><div class="row">
                             <a href="tasks.php?mode=edit&amp;id=<?= $rowId ?>#task-form" aria-label="Edit task: <?= h($row['title']) ?>">Edit</a>
                             <a href="tasks.php?mode=delete&amp;id=<?= $rowId ?>#delete-title" aria-label="Delete task: <?= h($row['title']) ?>">Delete</a>
@@ -199,6 +250,7 @@ require __DIR__ . '/../includes/workspace.php';
                 </tbody>
             </table>
         </div>
-    <?php elseif ($filterError === ''): ?><p>No tasks match. Clear your filters or add a task.</p><?php endif; ?>
+    <?php elseif ($filterError === ''): ?><div class="task-empty"><h3>No tasks to show</h3><p>Clear your filters or add your first task.</p><a class="button" href="tasks.php?mode=add#task-form">Add Task</a></div><?php endif; ?>
 </section>
+<script src="js/tasks-ui.js" defer></script>
 <?php require __DIR__ . '/../includes/workspace-end.php'; ?>

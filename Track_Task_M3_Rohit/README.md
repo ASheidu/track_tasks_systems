@@ -60,3 +60,30 @@ when PHP does not receive HTTPS directly. Never commit config.local.php.
    submission's cover page and links.
 
 See TEAM_HANDOFF.md for the routes, shared PHP interface and file ownership.
+
+## Windows setup with Wampserver64
+
+Start Wampserver's MySQL service. In VS Code, open this project folder
+(the folder containing public, includes, and sql). In PowerShell run:
+
+~~~powershell
+& "C:\wamp64\bin\php\php8.0.30\php.exe" -S localhost:8000 -t public
+~~~
+
+Adjust the executable path if your PHP version differs. Keep the terminal
+open and visit http://localhost:8000. Stop the server with Ctrl+C.
+A connection-refused message usually means this PHP server is not running.
+VS Code Live Server cannot process these PHP pages.
+
+Do not import schema.sql again into a database that already has these
+tables. Keep your working config.local.php locally; it is not included
+in GitHub. After merging, download the milestone3 branch into a separate
+folder, add your private configuration locally, and repeat the main
+registration, login, task, dashboard, and logout checks.
+
+Temporary check-db.php and public/local-task-test.php scripts are local
+development tools. They must not be committed or included in deployment.
+Use real registration and login for combined testing.
+
+See LOCAL_TEST_RESULTS.md for Rohit's reported integration checks.
+Deployment testing is separate and remains required.
